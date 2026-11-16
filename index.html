@@ -31,6 +31,37 @@
     code { background:#22262c; }
   }
 </style>
+<script>
+/* Dil algilama — TR tarayici: gizlilik.html | diger tum diller: privacy.html
+   • JS kapali/hatali ise bu blok calismaz, hub sayfasi normal gorunur (sayfa asla bos kalmaz).
+   • "Tum hukuki metinler" linkiyle hub'a geri donen oyuncu tekrar yonlendirilmez (sessionStorage).
+   • Sadece ES5 sozdizimi kullanilir; hicbir dis kaynak yuklenmez. */
+(function () {
+  try {
+    var m = /[?&]lang=(tr|en)(&|$)/.exec(location.search);
+    if (m) {
+      location.replace(m[1] === "tr" ? "gizlilik.html" : "privacy.html");
+      return;
+    }
+
+    var goruldu = false;
+    try {
+      goruldu = sessionStorage.getItem("roll_hub_seen") === "1";
+      sessionStorage.setItem("roll_hub_seen", "1");
+    } catch (e) { goruldu = false; }
+    if (goruldu) return;
+
+    var diller = navigator.languages || [navigator.language || navigator.userLanguage || "en"];
+    var turkce = false;
+    for (var i = 0; i < diller.length; i++) {
+      var l = String(diller[i] || "").toLowerCase();
+      if (l.split("-")[0] === "tr") { turkce = true; break; }
+    }
+
+    location.replace(turkce ? "gizlilik.html" : "privacy.html");
+  } catch (e) { /* hub sayfasi oldugu gibi kalir */ }
+})();
+</script>
 </head>
 <body>
 <div class="wrap">
